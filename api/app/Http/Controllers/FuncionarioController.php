@@ -13,7 +13,7 @@ class FuncionarioController extends Controller
     public function index()
     {
         $this->authorize('viewAny', User::class);
-        $funcionarios = User::where('role', 'employee')->get();
+        $funcionarios = User::where('role', 'funcionario')->get();
         return response()->json($funcionarios);
     }
 

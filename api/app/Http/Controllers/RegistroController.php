@@ -23,8 +23,15 @@ class RegistroController extends Controller
             'saida' => $request->tipo === 'saida' ? now() : null,
         ]);
 
-        return response()->json($registro, 201);
-    }
+        $message = $request->tipo === 'entrada' ? 'Ponto de entrada registrado com sucesso' : 'Ponto de saída registrado com sucesso';
+        $timestamp = $request->tipo === 'entrada' ? $registro->entrada : $registro->saida;
+
+        return response()->json([
+            'message' => $message,
+            'timestamp' => $timestamp,
+            'registro' => $registro,
+        ], 201);
+        }
 
     public function index()
     {
