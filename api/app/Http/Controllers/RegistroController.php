@@ -43,7 +43,7 @@ class RegistroController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $registros = Registro::where('user_id', $user->id)->get();
+        $registros = Registro::where('user_id', $user->id)->paginate(10); // Aplica a paginação
         return response()->json($registros);
     }
 }
