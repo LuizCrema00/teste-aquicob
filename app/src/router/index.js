@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../components/Login.vue';
 import Usuarios from '../components/Usuarios.vue';
 import Ponto from '../components/Ponto.vue';
+import CadastroFuncionario from '../components/CadastroFuncionario.vue';
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     name: 'Ponto',
     component: Ponto,
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/cadastro-funcionario',
+    name: 'CadastroFuncionario',
+    component: CadastroFuncionario,
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
 ];
 
