@@ -8,35 +8,43 @@ use Illuminate\Support\Facades\Auth;
 
 class RegistroController extends Controller
 {
-    //
     public function store(Request $request)
     {
-        $request->validate([
-            'tipo' => 'required|in:entrada,saida',
-        ]);
-
         $user = Auth::user();
+        $tipo = $request->tipo;
 
-        $registro = Registro::create([
-            'user_id' => $user->id,
-            'entrada' => $request->tipo === 'entrada' ? now() : null,
-            'saida' => $request->tipo === 'saida' ? now() : null,
-        ]);
+        // Verifica se há um registro de entrada sem uma saída correspondente
+        $registro = Registro::where('user_id', $user->id)
+                            ->whereNull('saida')
+                            ->first();
 
-        $message = $request->tipo === 'entrada' ? 'Ponto de entrada registrado com sucesso' : 'Ponto de saída registrado com sucesso';
-        $timestamp = $request->tipo === 'entrada' ? $registro->entrada : $registro->saida;
-
-        return response()->json([
-            'message' => $message,
-            'timestamp' => $timestamp,
-            'registro' => $registro,
-        ], 201);
+        if ($tipo == 'entrada') {
+            // Se não houver registro de entrada sem saída, cria um novo
+            if (!$registro) {
+                $registro = new Registro();
+                $registro->user_id = $user->id;
+                $registro->entrada = now();
+                $registro->save();
+            }
+        } elseif ($tipo == 'saida') {
+            // Atualiza o registro existente com a saída
+            if ($registro) {
+                $registro->saida = now();
+                $registro->save();
+            } else {
+                // Se não houver um registro de entrada sem saída, talvez lançar uma exceção
+                return response()->json(['error' => 'Não há registro de entrada para esse usuário.'], 400);
+            }
         }
+
+        return response()->json(['message' => 'Registro atualizado com sucesso.', 'timestamp' => now()]);
+    }
 
     public function index()
     {
         $user = Auth::user();
-        $registros = $user->registros;
+        $registros = Registro::where('user_id', $user->id)->get();
         return response()->json($registros);
     }
 }
+
