@@ -1,4 +1,4 @@
-Sistema "Ponto"
+# Sistema "Ponto"
 
 Sistema Ponto para controle de entradas e saídas de funcionario
 
