@@ -1,13 +1,17 @@
 <template>
-  <div>
-    <h1>Registro de Ponto</h1>
-    <div>
-      <p>{{ currentDate }} - {{ currentTime }}</p>
+  <div class="container">
+    <div class="ponto-container">
+      <h1>Registro de Ponto</h1>
+      <div class="ponto-data">
+        <p>{{ currentDayOfWeek }} - {{ currentDate }} - {{ currentTime }}</p>
+      </div>
+      <div class="ponto-button">
+        <button class="ponto-entrada" @click="baterPonto('entrada')">Entrada</button>
+        <button class="ponto-saida" @click="baterPonto('saida')">Saída</button>
+      </div>
     </div>
-    <button @click="baterPonto('entrada')">Bater Ponto de Entrada</button>
-    <button @click="baterPonto('saida')">Bater Ponto de Saída</button>
     <h2>Registros</h2>
-    <table>
+    <table class="registros-tabela">
       <thead>
         <tr>
           <th>Dia da Semana</th>
@@ -18,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="registro in registros" :key="registro.id">
+        <tr v-for="registro in registros.data" :key="registro.id">
           <td>{{ getDiaSemana(registro.entrada) }}</td>
           <td>{{ formatarData(registro.entrada) }}</td>
           <td>{{ formatarHora(registro.entrada) }}</td>
@@ -27,6 +31,10 @@
         </tr>
       </tbody>
     </table>
+    <div class="pagination">
+      <button v-if="registros.prev_page_url" @click="carregarPagina(registros.current_page - 1)">Anterior</button>
+      <button v-if="registros.next_page_url" @click="carregarPagina(registros.current_page + 1)">Próximo</button>
+    </div>
   </div>
 </template>
 
@@ -36,9 +44,10 @@ import apiClient from '../services/api';
 export default {
   data() {
     return {
-      registros: [],
+      registros: {},
       currentDate: '',
       currentTime: '',
+      currentDayOfWeek: '',
     };
   },
   created() {
@@ -59,8 +68,8 @@ export default {
           console.error('Erro ao bater ponto:', error);
         });
     },
-    fetchRegistros() {
-      apiClient.get('/registros', {
+    fetchRegistros(page = 1) {
+      apiClient.get(`/registros?page=${page}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
         .then(response => {
@@ -70,20 +79,25 @@ export default {
           console.error('Erro ao buscar registros:', error);
         });
     },
+    carregarPagina(page) {
+      this.fetchRegistros(page);
+    },
     updateCurrentDateTime() {
       const now = new Date();
-      this.currentDate = now.toLocaleDateString();
-      this.currentTime = now.toLocaleTimeString();
+      const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+      this.currentDate = now.toLocaleDateString('pt-BR');
+      this.currentTime = now.toLocaleTimeString('pt-BR');
+      this.currentDayOfWeek = days[now.getDay()];
     },
     formatarData(timestamp) {
       if (!timestamp) return '';
       const date = new Date(timestamp);
-      return date.toLocaleDateString();
+      return date.toLocaleDateString('pt-BR');
     },
     formatarHora(timestamp) {
       if (!timestamp) return '';
       const date = new Date(timestamp);
-      return date.toLocaleTimeString();
+      return date.toLocaleTimeString('pt-BR');
     },
     getDiaSemana(timestamp) {
       if (!timestamp) return '';
@@ -97,27 +111,105 @@ export default {
       const saidaDate = new Date(saida);
       const diffMs = saidaDate - entradaDate;
       const diffHrs = diffMs / (1000 * 60 * 60);
-      return diffHrs.toFixed(2) + ' horas';
+
+      const hours = Math.floor(diffHrs);
+      const minutes = Math.floor((diffHrs - hours) * 60);
+
+      return `${hours > 0 ? hours + ' horas ' : ''}${minutes} minutos`;
     }
   }
 };
 </script>
 
 <style>
-table {
+.container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 60px; /* Espaço extra para o footer */
+    display: flex;
+    flex-direction: column;
+}
+
+.ponto-container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  border-collapse: collapse;
 }
 
-th, td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.ponto-data {
+  font-size: 36px;
 }
 
-th {
-  background-color: #f2f2f2;
+.ponto-button {
+  display: flex;
+  margin: 0 auto;
+  gap: 2em;
+  height: 50px;
+}
+
+.ponto-entrada {
+  background-color: #06D001;
+  color: #ffffff;
+  border: none;
+  width: 120px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.ponto-entrada:hover {
+  background-color: #9BEC00;
+}
+
+.ponto-saida {
+  background-color: #C80036;
+  color: #ffffff;
+  border: none;
+  width: 120px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.ponto-saida:hover {
+  background-color: #EE4E4E;
+}
+
+.registros-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.registros-tabela th,
+  .registros-tabela td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  .registros-tabela th {
+    background-color: #4F709C;
+    color: white;
+  }
+
+.pagination {
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #4F709C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #344e74;
 }
 </style>
+
+
+
 
   
