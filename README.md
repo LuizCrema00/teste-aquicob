@@ -2,6 +2,17 @@
 
 Sistema Ponto para controle de entradas e saídas de funcionario
 
+O Sistema possui Autenticação, nele temos um usuário administrador do sistema que possui permissao de criação, visualização e exclusão de outros usuários que possuem "roles" de funcionário.
+
+![image](https://github.com/LuizCrema00/teste-aquicob/assets/102314153/708bde50-6898-49e9-a383-315cb7d1c0f6)
+
+Para o usuário autenticado como administrador do sistema, é exibida a tela de gestão de funcionários.
+
+![image](https://github.com/LuizCrema00/teste-aquicob/assets/102314153/4fef2e8a-50d7-4d4b-a5fd-f31279207ed8)
+
+Para o usuário autenticado como funcionário, é exibida a tela de ponto eletronico. Em que é possivel realizar a entrada e a saída e obter os registros do dia, hora de chegada, hora de saída e quantidade de horas trabalhadas.
+
+![image](https://github.com/LuizCrema00/teste-aquicob/assets/102314153/10848575-c72d-4b28-ad0b-68b0b08b189b)
 
 ### Build do Sistema
 
