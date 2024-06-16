@@ -49,8 +49,21 @@ Siga os passos abaixo para configurar e executar o projeto localmente:
 
 4. ### Migrations e seeders
 
+   Executar as migracoes para o banco de dados
+
    php artisan migrate
 
+   Inserir o usuario admin no banco de dados
+
+   php artisan db:seed
+
+   Com isso sera criado o usuario com
+
+   Nome:admin
+
+   Email:admin@admin.com
+
+   Senha:admin
 
 6. ### Execução do projeto
    php artisan serve
