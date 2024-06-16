@@ -66,9 +66,11 @@ Siga os passos abaixo para configurar e executar o projeto localmente:
    Senha:admin
 
 6. ### Execução do projeto
+
+   para rodar o backend
+   
    php artisan serve
 
-   o projeto estará disponivel em http://localhost:8000 que é a porta padrao
 
 # FRONTEND
 
