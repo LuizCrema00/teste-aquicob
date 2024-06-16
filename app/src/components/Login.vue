@@ -7,7 +7,7 @@
         <input class="form-input" type="email" v-model="form.email" required />
       </div>
       <div class="form-group">
-        <label class="form-label" for="password">Password</label>
+        <label class="form-label" for="password">Senha</label>
         <input class="form-input" type="password" v-model="form.password" required />
       </div>
       <button class="login-botao" type="submit">Entrar</button>
