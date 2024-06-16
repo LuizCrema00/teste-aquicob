@@ -1,6 +1,6 @@
 # Sistema "Ponto"
 
-Sistema Ponto para controle de entradas e saídas de funcionario
+Sistema de Ponto eletronico
 
 O Sistema possui Autenticação, nele temos um usuário administrador do sistema que possui permissao de criação, visualização e exclusão de outros usuários que possuem "roles" de funcionário.
 
